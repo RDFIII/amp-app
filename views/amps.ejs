@@ -1,3 +1,5 @@
+<% include partials/header %>
+
 <h1>Amps Page</h1>
 
 <% amps.forEach(function(amp){ %>
@@ -6,3 +8,5 @@
     <img src="<%= amp.image %>">
   </div>
 <% }); %>
+
+<% include partials/footer %>
