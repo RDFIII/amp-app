@@ -20,39 +20,6 @@ let data = [
  }
 ];
 
-// function seedDB(){
-//   // remove all amps
-//   Amp.remove({}, function(err){
-//     if(err){
-//       console.log(err);
-//     } else {
-//       console.log("removed amps");
-//       data.forEach(function(seed){
-//         Amp.create(seed, function(err, amp){
-//           if(err){
-//             console.log(err);
-//           } else {
-//             console.log("added amp");
-//             // create comment
-//             Comment.create(
-//               {text: "Wonderful, just wonderful, wonderous amp",
-//                author: "Homer Simpson"
-//              }, function(err, comment){
-//                if(err){
-//                  console.log(err);
-//                } else {
-//                  Amp.comments.push(comment);
-//                  Amp.save
-//                  console.log("created new comment");
-//                };
-//              });
-//           };
-//         });
-//       });
-//     };
-//   });
-// };
-
 function seedDB(){
     //Remove all amps
     Amp.remove({}, function(err){
