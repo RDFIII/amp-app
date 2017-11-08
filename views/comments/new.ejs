@@ -5,7 +5,7 @@
     <h1 style="text-align: center;">Add new comment to <%= amp.name %></h1>
 
     <div style="width: 30%; margin: 25px auto">
-      <form action="/amps/<%= amp._id %>" method="POST">
+      <form action="/amps/<%= amp._id %>/comments" method="POST">
         <div class="form-group">
           <input class="form-control" type="text" name="comment[text]" placeholder="text">
         </div>

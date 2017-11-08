@@ -95,7 +95,7 @@ app.get("/amps/:id/comments/new", function(req, res){
   });
 });
 
-app.post("/amps/:id/commnets", function(req, res){
+app.post("/amps/:id/comments", function(req, res){
   Amp.findById(req.params.id, function(err, amp){
     if(err){
       console.log(err);
@@ -107,7 +107,7 @@ app.post("/amps/:id/commnets", function(req, res){
         } else {
           amp.comments.push(comment);
           amp.save();
-          res.redirect("amps/" + amp._id);
+          res.redirect(`/amps/${amp._id}`);
         };
       });
     };
