@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Amp = require("./models/amp");
+const Comment = require("./models/comment");
 
 let data = [
   {
@@ -19,25 +20,78 @@ let data = [
  }
 ];
 
+// function seedDB(){
+//   // remove all amps
+//   Amp.remove({}, function(err){
+//     if(err){
+//       console.log(err);
+//     } else {
+//       console.log("removed amps");
+//       data.forEach(function(seed){
+//         Amp.create(seed, function(err, amp){
+//           if(err){
+//             console.log(err);
+//           } else {
+//             console.log("added amp");
+//             // create comment
+//             Comment.create(
+//               {text: "Wonderful, just wonderful, wonderous amp",
+//                author: "Homer Simpson"
+//              }, function(err, comment){
+//                if(err){
+//                  console.log(err);
+//                } else {
+//                  Amp.comments.push(comment);
+//                  Amp.save
+//                  console.log("created new comment");
+//                };
+//              });
+//           };
+//         });
+//       });
+//     };
+//   });
+// };
+
 function seedDB(){
-  // remove all amps
-  Amp.remove({}, function(err){
-    if(err){
-      console.log(err);
-    } else {
-      console.log("removed amps");
-    };
-  });
-  // create amps
-  data.forEach(function(seed){
-    Amp.create(seed, function(err, data){
-      if(err){
-        console.log(err);
-      } else {
-        console.log("added amp");
-      };
+    //Remove all amps
+    Amp.remove({}, function(err){
+        if(err){
+            console.log(err);
+        }
+        console.log("Removed amps");
+        //Remove all comments
+        Comment.remove({}, function(err) {
+          if(err){
+            console.log(err);
+          }
+          console.log("Removed comments");
+            //add a few campgrounds
+          data.forEach(function(seed){
+            Amp.create(seed, function(err, amp){
+              if(err){
+                console.log(err)
+                  } else {
+                    console.log("added an amp");
+                        //create a comment
+                    Comment.create(
+                      {
+                        text: "Wow wonderful amp, just wonderously wonderful",
+                        author: "Homer Simpson"
+                      }, function(err, comment){
+                        if(err){
+                          console.log(err);
+                        } else {
+                          amp.comments.push(comment);
+                          amp.save();
+                          console.log("Created new comment");
+                      }
+                    });
+                  }
+                });
+            });
+        });
     });
-  });
-};
+}
 
 module.exports = seedDB;

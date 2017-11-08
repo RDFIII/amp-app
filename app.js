@@ -3,14 +3,15 @@ const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const Amp = require("./models/amp");
+const Comment = require("./models/comment");
 const seedDB = require("./seeds");
-
-seedDB();
 
 mongoose.connect("mongodb://localhost/amp-app", { useMongoClient: true });
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+
+seedDB();
 
 
 // Amp.create({
@@ -46,7 +47,7 @@ app.get("/amps/new", function(req, res){
 
 // SHOW - shows info for one amp
 app.get("/amps/:id", function(req,res){
-  Amp.findById(req.params.id, function(err, foundAmp){
+  Amp.findById(req.params.id).populate("comments").exec(function(err, foundAmp){
     if(err){
       console.log(err);
     } else {
