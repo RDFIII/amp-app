@@ -154,14 +154,13 @@ app.post("/register", function(req, res){
 });
 
 app.get("/login", function(req, res){
-  app.render("login");
+  res.render("login");
 });
 
 app.post("/login", passport.authenticate("local",
   {successRedirect: "/amps",
    failureRedirect: "/login"
  }), function(req, res){
-
 });
 
 
