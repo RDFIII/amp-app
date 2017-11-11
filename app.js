@@ -3,8 +3,11 @@ const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const Amp = require("./models/amp");
+const User = require("./models/user");
 const Comment = require("./models/comment");
 const seedDB = require("./seeds");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
 
 // mongoose.connect("mongodb://localhost/amp-app", { useMongoClient: true
 
@@ -32,8 +35,24 @@ mongoose.connect(`mongodb://localhost/amp-app`, {
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"));
 
 seedDB();
+
+// Passport Config
+app.use(require("express-session")({
+  secret: "Meshuggah",
+  resave: false,
+  saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
 
 app.get("/", function(req, res){
   res.render("landing");
@@ -113,6 +132,39 @@ app.post("/amps/:id/comments", function(req, res){
     };
   });
 });
+
+
+// AUTH ROUTES
+
+app.get("/register", function(req, res){
+  res.render("register");
+});
+
+app.post("/register", function(req, res){
+  let newUser = new User({username: req.body.username});
+  User.register(newUser, req.body.password, function(err, user){
+    if(err){
+      console.log(err);
+      return res.render("register");
+    };
+    passport.authenticate("local")(req, res, function(){
+      res.redirect("/amps");
+    });
+  });
+});
+
+app.get("/login", function(req, res){
+  app.render("login");
+});
+
+app.post("/login", passport.authenticate("local",
+  {successRedirect: "/amps",
+   failureRedirect: "/login"
+ }), function(req, res){
+
+});
+
+
 
 app.listen(3000, function(){
   console.log("Listening on 3000");
