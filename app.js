@@ -104,7 +104,7 @@ app.post("/amps", function(req, res){
 // COMMENTS ROUTES
 // ============================================================
 
-app.get("/amps/:id/comments/new", function(req, res){
+app.get("/amps/:id/comments/new", isLoggedIn, function(req, res){
   Amp.findById(req.params.id, function(err, amp){
     if(err){
       console.log(err);
@@ -114,7 +114,7 @@ app.get("/amps/:id/comments/new", function(req, res){
   });
 });
 
-app.post("/amps/:id/comments", function(req, res){
+app.post("/amps/:id/comments", isLoggedIn, function(req, res){
   Amp.findById(req.params.id, function(err, amp){
     if(err){
       console.log(err);
@@ -168,7 +168,12 @@ app.get("/logout", function(req, res){
   res.redirect("/amps");
 });
 
-
+function isLoggedIn(req, res, next){
+  if(req.isAuthenticated()){
+    return next();
+  };
+  res.redirect("/login");
+};
 
 app.listen(3000, function(){
   console.log("Listening on 3000");
