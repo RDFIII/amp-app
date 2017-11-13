@@ -9,8 +9,12 @@ const seedDB = require("./seeds");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
-// mongoose.connect("mongodb://localhost/amp-app", { useMongoClient: true
+// ROUTE FILES
+const ampRoutes = require("./routes/amps");
+const commentRoutes = require("./routes/comments");
+const indexRoutes = require("./routes/index");
 
+// mongoose.connect("mongodb://localhost/amp-app", { useMongoClient: true });
 
 // CONNECT to mongoose
 // replace the deprecated mongoose.Promise library
@@ -57,127 +61,10 @@ app.use(function(req, res, next){
   next();
 });
 
-app.get("/", function(req, res){
-  res.render("landing");
-});
+app.use("/amps", ampRoutes);
+app.use("/amps/:id/comments", commentRoutes);
+app.use("/", indexRoutes);
 
-// INDEX - show all amps
-app.get("/amps", function(req, res){
-  // res.render("amps", {amps: amps});
-  Amp.find({}, function(err, allAmps){
-    if(err){
-      console.log("ERROR");
-    } else {
-      res.render("amps/index", {amps: allAmps, currentUser: req.user});
-    };
-  });
-});
-
-app.get("/amps/new", function(req, res){
-  res.render("amps/new.ejs");
-});
-
-// SHOW - shows info for one amp
-app.get("/amps/:id", function(req,res){
-  Amp.findById(req.params.id).populate("comments").exec(function(err, foundAmp){
-    if(err){
-      console.log(err);
-    } else {
-      res.render("amps/show", {amp: foundAmp});
-    };
-  });
-});
-
-// NEW
-app.post("/amps", function(req, res){
-  let name = req.body.name;
-  let image = req.body.image;
-  let description = req.body.description;
-  let newAmp = {name: name, image: image, description: description};
-  Amp.create(newAmp, function(err, newlyCreated){
-    if(err){
-      console.log("ERROR");
-    } else {
-      res.redirect("/amps");
-    };
-  });
-});
-
-// ============================================================
-// COMMENTS ROUTES
-// ============================================================
-
-app.get("/amps/:id/comments/new", isLoggedIn, function(req, res){
-  Amp.findById(req.params.id, function(err, amp){
-    if(err){
-      console.log(err);
-    } else {
-      res.render("comments/new", {amp: amp});
-    };
-  });
-});
-
-app.post("/amps/:id/comments", isLoggedIn, function(req, res){
-  Amp.findById(req.params.id, function(err, amp){
-    if(err){
-      console.log(err);
-      res.redirect("/amps");
-    } else {
-      Comment.create(req.body.comment, function(err, comment){
-        if(err){
-          console.log(err);
-        } else {
-          amp.comments.push(comment);
-          amp.save();
-          res.redirect(`/amps/${amp._id}`);
-        };
-      });
-    };
-  });
-});
-
-
-// AUTH ROUTES
-
-app.get("/register", function(req, res){
-  res.render("register");
-});
-
-app.post("/register", function(req, res){
-  let newUser = new User({username: req.body.username});
-  User.register(newUser, req.body.password, function(err, user){
-    if(err){
-      console.log(err);
-      return res.render("register");
-    };
-    passport.authenticate("local")(req, res, function(){
-      res.redirect("/amps");
-    });
-  });
-});
-
-app.get("/login", function(req, res){
-  res.render("login");
-});
-
-app.post("/login", passport.authenticate("local",
-  {successRedirect: "/amps",
-   failureRedirect: "/login"
- }), function(req, res){
-});
-
-app.get("/logout", function(req, res){
-  req.logout();
-  res.redirect("/amps");
-});
-
-function isLoggedIn(req, res, next){
-  if(req.isAuthenticated()){
-    return next();
-  };
-  res.redirect("/login");
-};
-
-app.listen(3000, function(){
+app.listen(4000, function(){
   console.log("Listening on 3000");
 });
