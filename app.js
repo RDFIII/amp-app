@@ -69,6 +69,6 @@ app.use("/amps", ampRoutes);
 app.use("/amps/:id/comments", commentRoutes);
 app.use("/", indexRoutes);
 
-app.listen(4000, function(){
+app.listen(3000, function(){
   console.log("Listening on 3000");
 });

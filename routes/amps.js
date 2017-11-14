@@ -70,6 +70,17 @@ router.post("/", isLoggedIn, function(req, res){
   });
 });
 
+// DESTROY
+router.delete("/:id", function(req, res){
+  Amp.findByIdAndRemove(req.params.id, function(err){
+    if(err){
+      res.redirect("/amps");
+    } else {
+      res.redirect("/amps");
+    };
+  });
+});
+
 // Middleware
 function isLoggedIn(req, res, next){
   if(req.isAuthenticated()){
