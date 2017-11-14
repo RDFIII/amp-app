@@ -19,12 +19,34 @@ router.get("/new", isLoggedIn, function(req, res){
 });
 
 // SHOW - shows info for one amp
-router.get("/:id", function(req,res){
+router.get("/:id", function(req, res){
   Amp.findById(req.params.id).populate("comments").exec(function(err, foundAmp){
     if(err){
       console.log(err);
     } else {
       res.render("amps/show", {amp: foundAmp});
+    };
+  });
+});
+
+// EDIT
+router.get("/:id/edit", function(req, res){
+  Amp.findById(req.params.id, function(err, foundAmp){
+    if(err){
+      res.redirect("/amps");
+    } else {
+      res.render("amps/edit", {amp: foundAmp});
+    }
+  });
+});
+
+// UPDATE
+router.put("/:id", function(req, res){
+  Amp.findByIdAndUpdate(req.params.id, req.body.amp, function(err, updatedAmp){
+    if(err){
+      res.redirect("/amps");
+    } else {
+      res.redirect(`/amps/${req.params.id}`);
     };
   });
 });

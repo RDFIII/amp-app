@@ -8,6 +8,7 @@ const Comment = require("./models/comment");
 const seedDB = require("./seeds");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+const methodOverride = require("method-override");
 
 // ROUTE FILES
 const ampRoutes = require("./routes/amps");
@@ -40,6 +41,8 @@ mongoose.connect(`mongodb://localhost/amp-app`, {
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
+
+app.use(methodOverride("_method"));
 
 // Seed the database using seed file
 // seedDB();
