@@ -30,18 +30,14 @@ router.get("/:id", function(req, res){
 });
 
 // EDIT
-router.get("/:id/edit", function(req, res){
+router.get("/:id/edit", checkAmpAuthor, function(req, res){
   Amp.findById(req.params.id, function(err, foundAmp){
-    if(err){
-      res.redirect("/amps");
-    } else {
-      res.render("amps/edit", {amp: foundAmp});
-    }
-  });
+    res.render("amps/edit", {amp: foundAmp});
+    });
 });
 
 // UPDATE
-router.put("/:id", function(req, res){
+router.put("/:id", checkAmpAuthor, function(req, res){
   Amp.findByIdAndUpdate(req.params.id, req.body.amp, function(err, updatedAmp){
     if(err){
       res.redirect("/amps");
@@ -71,7 +67,7 @@ router.post("/", isLoggedIn, function(req, res){
 });
 
 // DESTROY
-router.delete("/:id", function(req, res){
+router.delete("/:id", checkAmpAuthor, function(req, res){
   Amp.findByIdAndRemove(req.params.id, function(err){
     if(err){
       res.redirect("/amps");
@@ -87,6 +83,24 @@ function isLoggedIn(req, res, next){
     return next();
   };
   res.redirect("/login");
+};
+
+function checkAmpAuthor(req, res, next){
+  if(req.isAuthenticated()){
+    Amp.findById(req.params.id, function(err, foundAmp){
+      if(err){
+        res.redirect("back");
+      } else {
+        if(foundAmp.author.id.equals(req.user._id)){
+          next();
+        } else {
+          res.redirect("back");
+        };
+      };
+    });
+  } else {
+    res.redirect("back");
+  };
 };
 
 module.exports = router;
