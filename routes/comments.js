@@ -40,11 +40,9 @@ router.post("/", isLoggedIn, function(req, res){
 // EDIT
 router.get("/:comment_id/edit", checkCommentAuthor, function(req,res){
   Comment.findById(req.params.comment_id, function(err, foundComment){
-    console.log("fuccccccccccccckkkkkkkkk");
     if(err){
       res.redirect("back");
     } else {
-      console.log("fuck");
       res.render("comments/edit", {amp_id: req.params.id, comment: foundComment});
     };
   });
