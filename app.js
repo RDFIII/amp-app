@@ -9,6 +9,7 @@ const seedDB = require("./seeds");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const methodOverride = require("method-override");
+const flash = require("connect-flash");
 
 // ROUTE FILES
 const ampRoutes = require("./routes/amps");
@@ -41,7 +42,7 @@ mongoose.connect(`mongodb://localhost/amp-app`, {
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
-
+app.use(flash());
 app.use(methodOverride("_method"));
 
 // Seed the database using seed file
@@ -62,6 +63,8 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use(function(req, res, next){
   res.locals.currentUser = req.user;
+  res.locals.error = req.flash("error");
+  res.locals.success = req.flash("success");
   next();
 });
 

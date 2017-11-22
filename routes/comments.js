@@ -19,18 +19,19 @@ router.get("/new", middleware.isLoggedIn, function(req, res){
 router.post("/", middleware.isLoggedIn, function(req, res){
   Amp.findById(req.params.id, function(err, amp){
     if(err){
-      console.log(err);
+
       res.redirect("/amps");
     } else {
       Comment.create(req.body.comment, function(err, comment){
         if(err){
-          console.log(err);
+          req.flash("error", "Something Went Wrong");
         } else {
           comment.author.id = req.user._id;
           comment.author.username = req.user.username;
           comment.save();
           amp.comments.push(comment);
           amp.save();
+          req.flash("success", "Successfully Added Comment");
           res.redirect(`/amps/${amp._id}`);
         };
       });
@@ -55,6 +56,7 @@ router.put("/:comment_id", middleware.checkCommentAuthor, function(req, res){
     if(err){
       res.redirect("back");
     } else {
+      req.flash("success", "Successfully Edited Comment");
       res.redirect(`/amps/${req.params.id}`);
     };
   });
@@ -66,6 +68,7 @@ router.delete("/:comment_id", middleware.checkCommentAuthor, function(req, res){
     if(err){
       res.redirect("back");
     } else {
+      req.flash("success", "Comment Deleted");
       res.redirect("back");
     };
   });
