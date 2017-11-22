@@ -53,11 +53,12 @@ router.post("/", middleware.isLoggedIn, function(req, res){
   let name = req.body.name;
   let image = req.body.image;
   let description = req.body.description;
+  let price = req.body.price;
   let author = {
     id: req.user._id,
     username: req.user.username
   };
-  let newAmp = {name: name, image: image, description: description, author: author};
+  let newAmp = {name: name, image: image, description: description, author: author, price: price};
   Amp.create(newAmp, function(err, newlyCreated){
     if(err){
       console.log("ERROR");
